@@ -1,0 +1,18 @@
+/* 轮播图样式 */
+
+.carousel_div {
+  position: relative;
+  width: 100%;
+  height: 40%;
+}
+
+.swiper {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.swiper image {
+  height: 100%;
+  width: 100%;
+}
