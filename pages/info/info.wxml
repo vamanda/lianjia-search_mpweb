@@ -66,5 +66,36 @@
       <i-cell title="权属" value="{{data.Ownership}}"></i-cell>
       <i-cell title="首付预算" value="{{data.DownPaymentBudget}}"></i-cell>
       </i-cell-group>
-    </view>   
+    </view>
+    <view class='title'>
+      房源动态
+    </view>
+    <view style='margin-left:48rpx;margin-bottom:30rpx;'>
+      <i-row>
+      <i-col span="8" i-class="col-class">
+        <view class="item-title">
+          近7日带看(次)
+        </view>
+        <view class='value'>
+          {{data.Visit7}}
+        </view>
+      </i-col>
+      <i-col span="8" i-class="col-class">
+        <view class="item-title">
+          30日带看(次)
+        </view>
+        <view class='value'>
+          {{data.Visit30}}
+        </view>
+      </i-col>
+      <i-col span="8" i-class="col-class">
+        <view class="item-title">
+          关注(人)
+        </view>
+        <view class='value'>
+          {{data.Star}}
+        </view>
+      </i-col>
+    </i-row>
+    </view>
   </view>
