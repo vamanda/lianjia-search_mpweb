@@ -1,7 +1,7 @@
 <!--index.wxml-->
 
 <import src="/wxSearch/wxSearch.wxml"/>
-
+<i-message id="message" />
 <view class="wxSearch-section">
   <view class="wxSearch-pancel">
     <input bindinput="wxSearchInput" bindfocus="wxSerchFocus" value="{{wxSearchData.value}}" bindblur="wxSearchBlur" class="wxSearch-input" placeholder="请输入房源的关键字" />
@@ -9,7 +9,7 @@
   </view>
 </view>
 <template is="wxSearch" data="{{wxSearchData}}"/>
-<view wx:for="{{data}}">
+<view wx:for="{{data}}"  bindtap="clickCard" data-index="{{index}}">
   <i-card title="{{item.Title}}" extra="{{item.TotalPrice}}" price="{{item.UnitPrice}}" i-class="" thumb="{{item.Image}}">
   <view slot="content"><i-icon type="coordinates" size="28"/>{{item.CommunityName}} | {{item.SecArea}} | {{item.Area}}</view>
       <view slot="content"><i-icon type="homepage" size="28"/>{{item.HouseType}} | {{item.Toward}} | {{item.Decoration}} | {{item.Lift}}</view>

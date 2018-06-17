@@ -2,6 +2,7 @@
 //获取应用实例
 var WxSearch = require('../../wxSearch/wxSearch.js')
 var RelativeTime = require('../../relativeTime/relativeTime.js')
+const { $Message } = require('../../dist/base/index');
 var app = getApp()
 Page({
   data: {
@@ -13,8 +14,8 @@ Page({
     var that = this
     setTimeout(function () { console.log(that.data.data) }, 2000)
     //初始化的时候渲染wxSearchdata
-    WxSearch.init(that,43,['weappdev','小程序','wxParse','wxSearch','wxNotification']);
-    WxSearch.initMindKeys(['weappdev.com','微信小程序开发','微信开发','微信小程序']);
+    WxSearch.init(that,43,['北京','无锡','上海','南京','安吉','杭州']);
+    WxSearch.initMindKeys([]);
   },
   clickButton: function(){
     this.setData({test:456})
@@ -73,10 +74,54 @@ Page({
       }
     })
   },
-  clickCard: function(){
+  clickCard: function(event){
+    console.log(event)
     wx.navigateTo({
-      url: '../info/info'
+      url: '../info/info?pageId=' + this.data.data[event.currentTarget.dataset.index].PageId
     })
     console.log("!!!")
+  },
+  handleSuccess: function() {
+    $Message({
+      content: '刷新成功',
+      type: 'success'
+    });
+  },
+  handleError: function() {
+    $Message({
+      content: '刷新失败',
+      type: 'error'
+    });
+  },
+  onPullDownRefresh: function () {
+    wx.showNavigationBarLoading();
+    var that = this;
+    wx.request({
+      url: 'https://mzz.foryung.com/lianjia-search_mp/search',
+      method: "POST",
+      data: {
+        "keyword": "宝山",
+        "pageSize": 10,
+        "page": 1//从1开始
+      },
+      success: function(res){
+        console.log("成功！！")
+        var data = res.data.data
+        for (var i = 0; i < data.length; i++) {
+          data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
+        }
+        that.setData({ data: res.data.data })
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();//关闭下拉刷新
+        // console.log("成功！！！！")
+        that.handleSuccess();
+      },
+      fail: function(){
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();
+        // console.log("失败！！！！")
+        that.handleError();
+      }
+    })
   }
 })

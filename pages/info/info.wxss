@@ -1,18 +1,36 @@
-/* 轮播图样式 */
-
-.carousel_div {
-  position: relative;
-  width: 100%;
-  height: 40%;
-}
-
 .swiper {
-  position: absolute;
-  height: 100%;
+  height: 400rpx;
   width: 100%;
 }
-
 .swiper image {
   height: 100%;
   width: 100%;
+}
+.basic-info{
+  font-weight: bold;
+  margin-left: 30rpx;
+  margin-bottom: 20rpx;
+  margin-top: 20rpx;
+}
+.title{
+  font-weight: bold;
+  margin-left: 20rpx;
+  margin-bottom: 20rpx;
+  margin-top: 20rpx;
+  color: #375eab;
+}
+.item-title{
+  font-size: 26rpx;
+  color: #9c9fa1;
+
+}
+.value{
+  color: #fa5741;
+  font-weight: bold;
+}
+.card-title{
+  margin-left: 30rpx;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  font-weight: bold;
 }

@@ -2,70 +2,76 @@
 //获取应用实例
 var WxSearch = require('../../wxSearch/wxSearch.js')
 var RelativeTime = require('../../relativeTime/relativeTime.js')
+const { $Message } = require('../../dist/base/index');
 var app = getApp()
 Page({
   data: {
     data: [],
-    test: 123
+    PageId: ""
   },
-  onLoad: function () {
+  onLoad: function (options) {
     console.log('onLoad')
-    this.initData()
+    var pageId = options.pageId
+    this.setData({PageId:pageId})
+    console.log(pageId)
+    //this.initData()
+    this.initDetail(pageId)
     var that = this
-    setTimeout(function () { console.log(that.data.data) }, 2000)
+    setTimeout(function () { console.log(that.data.data.CarouselImages) }, 2000)
     //初始化的时候渲染wxSearchdata
     WxSearch.init(that, 43, ['weappdev', '小程序', 'wxParse', 'wxSearch', 'wxNotification']);
     WxSearch.initMindKeys(['weappdev.com', '微信小程序开发', '微信开发', '微信小程序']);
   },
-  clickButton: function () {
-    this.setData({ test: 456 })
-    console.log("!")
-  },
-  wxSearchFn: function (e) {
-    var that = this
-    WxSearch.wxSearchAddHisKey(that);
-
-  },
-  wxSearchInput: function (e) {
-    var that = this
-    WxSearch.wxSearchInput(e, that);
-  },
-  wxSerchFocus: function (e) {
-    var that = this
-    WxSearch.wxSearchFocus(e, that);
-  },
-  wxSearchBlur: function (e) {
-    var that = this
-    WxSearch.wxSearchBlur(e, that);
-  },
-  wxSearchKeyTap: function (e) {
-    var that = this
-    WxSearch.wxSearchKeyTap(e, that);
-  },
-  wxSearchDeleteKey: function (e) {
-    var that = this
-    WxSearch.wxSearchDeleteKey(e, that);
-  },
-  wxSearchDeleteAll: function (e) {
-    var that = this;
-    WxSearch.wxSearchDeleteAll(that);
-  },
-  wxSearchTap: function (e) {
-    var that = this
-    WxSearch.wxSearchHiddenPancel(that);
-  },
-  initData: function () {
-    var that = this
+  initDetail: function (PageId){
+    console.log("initDetail"+PageId)
+    var that=this
     wx.request({
-      url: 'https://mzz.foryung.com/lianjia-search_mp/detail?pageId=107100301883',
-      success: function (res) {
+      url: 'https://mzz.foryung.com/lianjia-search_mp/detail?pageId=' + PageId,
+      success:function(res){
         console.log(res)
+        console.log("!!!!")
         var data = res.data.data
-        for (var i = 0; i < data.length; i++) {
-          data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
-        }
+        data.PublishTime = RelativeTime.relativeTime(data.PublishTime)
+        data.CreatedAt = RelativeTime.relativeTime(data.CreatedAt)
+        data.UpdatedAt = RelativeTime.relativeTime(data.UpdatedAt)
         that.setData({ data: res.data.data })
       }
+    })
+  },
+  handleSuccess: function() {
+    $Message({
+      content: '刷新成功',
+      type: 'success'
+    });
+  },
+  handleError: function() {
+    $Message({
+      content: '刷新失败',
+      type: 'error'
+    });
+  },
+  onPullDownRefresh: function () {
+    var that = this
+    wx.request({
+      url: 'https://mzz.foryung.com/lianjia-search_mp/detail?pageId=' + that.data.PageId,
+      success: function (res) {
+        console.log(that.data.PageId)
+        // console.log("成功！！=+=")
+        var data = res.data.data
+        data.PublishTime = RelativeTime.relativeTime(data.PublishTime)
+        data.CreatedAt = RelativeTime.relativeTime(data.CreatedAt)
+        data.UpdatedAt = RelativeTime.relativeTime(data.UpdatedAt)
+        that.setData({ data: res.data.data })
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();//关闭下拉刷新
+        that.handleSuccess();
+        console.log("刷新成功！");
+      },
+      fail: function(){
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();
+        that.handleError();
+      } 
     })
   }
 })

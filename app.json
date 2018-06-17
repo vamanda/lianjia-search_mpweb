@@ -1,14 +1,16 @@
 {
   "pages":[
-    "pages/info/info",
     "pages/index/index",
+    "pages/info/info",
+    
     "pages/logs/logs"
   ],
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "房源房价看看看",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle":"black",
+    "enablePullDownRefresh": true
   },
   "component": true
 }
