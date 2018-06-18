@@ -7,24 +7,28 @@ var app = getApp()
 Page({
   data: {
       data:[],
-      key:""
+      keyword:"",
+      page:1,
+      
   },
   onLoad: function () {
     console.log('onLoad')
     var that = this
     setTimeout(function () { console.log(that.data.data) }, 2000)
     //初始化的时候渲染wxSearchdata
-    WxSearch.init(that,43,['北京','无锡','上海','南京','安吉','杭州']);
+    WxSearch.init(that,43,['宝山','浦东','北蔡','花木']);
     WxSearch.initMindKeys([]);
   },
   wxSearchFn: function(e){
     var that = this
     WxSearch.wxSearchAddHisKey(that); 
-    that.initData(that)     //初始化数据
+    that.initData()     //初始化数据
   },
   wxSearchInput: function(e){
     var that = this
     WxSearch.wxSearchInput(e,that);
+    that.setData({ keyword: e.detail.value})
+    //console.log(e)
   },
   wxSerchFocus: function(e){
     var that = this
@@ -37,6 +41,9 @@ Page({
   wxSearchKeyTap:function(e){
     var that = this
     WxSearch.wxSearchKeyTap(e,that);
+    console.log(e, e.currentTarget.dataset.key)
+    that.setData({keyword:e.currentTarget.dataset.key})
+    that.initData()
   },
   wxSearchDeleteKey: function(e){
     var that = this
@@ -50,13 +57,14 @@ Page({
     var that = this
     WxSearch.wxSearchHiddenPancel(that);
   },
-  initData: function(key){
+  initData: function(){
     var that=this
+    that.data.page=1
     wx.request({
       url: 'https://mzz.foryung.com/lianjia-search_mp/search',
       method: "POST",
       data:{
-        "keyword": that.data.key,
+        "keyword": that.data.keyword,
         "pageSize": 10,
         "page": 1//从1开始
       },
@@ -67,6 +75,9 @@ Page({
           data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
         }
         that.setData({data:res.data.data})
+      },
+      fail: function(err){
+        console.log("fail")
       }
     })
   },
@@ -96,26 +107,33 @@ Page({
       url: 'https://mzz.foryung.com/lianjia-search_mp/search',
       method: "POST",
       data: {
-        "keyword": that.data.key,
+        "keyword": that.data.keyword,
         "pageSize": 10,
-        "page": 1//从1开始
+        "page": that.data.page//从1开始
       },
       success: function(res){
-        console.log("成功！！")
-        var data = res.data.data
-        for (var i = 0; i < data.length; i++) {
-          data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
+        if(res.data.code==="SUCCESS"){
+          console.log("成功！！")
+          var data = res.data.data
+          for (var i = 0; i < data.length; i++) {
+            data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
+          }
+          that.setData({ data: data })
+          wx.hideNavigationBarLoading();
+          wx.stopPullDownRefresh();//关闭下拉刷新
+          // console.log("成功！！！！")
+          that.handleSuccess();
+        }else{
+          wx.hideNavigationBarLoading();
+          wx.stopPullDownRefresh();
+          console.log("失败！！！！")
+          that.handleError();
         }
-        that.setData({ data: res.data.data })
-        wx.hideNavigationBarLoading();
-        wx.stopPullDownRefresh();//关闭下拉刷新
-        // console.log("成功！！！！")
-        that.handleSuccess();
       },
       fail: function(){
         wx.hideNavigationBarLoading();
         wx.stopPullDownRefresh();
-        // console.log("失败！！！！")
+        console.log("失败！！！！")
         that.handleError();
       }
     })
@@ -125,22 +143,27 @@ Page({
     wx.showLoading({
       title: '玩命加载中',
     })
-    that.page = that.page + 1 //页数加1(不知道写的对不对)
+    that.data.page = that.data.page + 1 //页数加1(不知道写的对不对)
     wx.request({
       url: 'https://mzz.foryung.com/lianjia-search_mp/search',
       method:'POST',
       data: {
-        "keyword": that.data.key,
+        "keyword": that.data.keyword,
         "pageSize": 10,
-        "page": 1//从1开始
+        "page": that.data.page//从1开始
       },
       success: function(res){
         var data = res.data.data
+        var thisData = that.data.data
+        console.log("1",thisData,data)
         for(var i=0;i<data.length;i++){
           data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
+          thisData.push(data[i])
         }
-        that.setData({data:res.data.data})
+        console.log("2",thisData)
+        that.setData({data:thisData})
         wx.hideLoading();
+
       }
     })
   }

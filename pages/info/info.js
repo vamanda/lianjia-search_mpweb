@@ -32,8 +32,6 @@ Page({
         console.log("!!!!")
         var data = res.data.data
         data.PublishTime = RelativeTime.relativeTime(data.PublishTime)
-        data.CreatedAt = RelativeTime.relativeTime(data.CreatedAt)
-        data.UpdatedAt = RelativeTime.relativeTime(data.UpdatedAt)
         that.setData({ data: res.data.data })
       }
     })
@@ -59,8 +57,6 @@ Page({
         // console.log("成功！！=+=")
         var data = res.data.data
         data.PublishTime = RelativeTime.relativeTime(data.PublishTime)
-        data.CreatedAt = RelativeTime.relativeTime(data.CreatedAt)
-        data.UpdatedAt = RelativeTime.relativeTime(data.UpdatedAt)
         that.setData({ data: res.data.data })
         wx.hideNavigationBarLoading();
         wx.stopPullDownRefresh();//关闭下拉刷新

@@ -8,7 +8,7 @@
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "房源房价看看看",
+    "navigationBarTitleText": "上海优房",
     "navigationBarTextStyle":"black",
     "enablePullDownRefresh": true
   },

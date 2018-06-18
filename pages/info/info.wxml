@@ -59,8 +59,7 @@
     </view>
     <view>
       <i-cell-group>
-      <i-cell title="挂牌时间" value="{{data.CreatedAt}}"></i-cell>
-      <i-cell title="上次交易" value="{{data.UpdatedAt}}"></i-cell>
+      <i-cell title="挂牌时间" value="{{data.PublishTime}}"></i-cell>
       <i-cell title="单价" value="{{data.UnitPrice}}元/平米"></i-cell>
       <i-cell title="用途" value="{{data.HouseUse}}"></i-cell>
       <i-cell title="权属" value="{{data.Ownership}}"></i-cell>
