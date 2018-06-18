@@ -7,24 +7,20 @@ var app = getApp()
 Page({
   data: {
       data:[],
+      key:""
   },
   onLoad: function () {
     console.log('onLoad')
-    this.initData()
     var that = this
     setTimeout(function () { console.log(that.data.data) }, 2000)
     //初始化的时候渲染wxSearchdata
     WxSearch.init(that,43,['北京','无锡','上海','南京','安吉','杭州']);
     WxSearch.initMindKeys([]);
   },
-  clickButton: function(){
-    this.setData({test:456})
-    console.log("!")
-  },
   wxSearchFn: function(e){
     var that = this
-    WxSearch.wxSearchAddHisKey(that);
-    
+    WxSearch.wxSearchAddHisKey(that); 
+    that.initData(that)     //初始化数据
   },
   wxSearchInput: function(e){
     var that = this
@@ -54,13 +50,13 @@ Page({
     var that = this
     WxSearch.wxSearchHiddenPancel(that);
   },
-  initData: function(){
+  initData: function(key){
     var that=this
     wx.request({
       url: 'https://mzz.foryung.com/lianjia-search_mp/search',
       method: "POST",
       data:{
-        "keyword": "宝山",
+        "keyword": that.data.key,
         "pageSize": 10,
         "page": 1//从1开始
       },
@@ -100,7 +96,7 @@ Page({
       url: 'https://mzz.foryung.com/lianjia-search_mp/search',
       method: "POST",
       data: {
-        "keyword": "宝山",
+        "keyword": that.data.key,
         "pageSize": 10,
         "page": 1//从1开始
       },
@@ -121,6 +117,30 @@ Page({
         wx.stopPullDownRefresh();
         // console.log("失败！！！！")
         that.handleError();
+      }
+    })
+  },
+  onReachBottom: function () {
+    var that = this
+    wx.showLoading({
+      title: '玩命加载中',
+    })
+    that.page = that.page + 1 //页数加1(不知道写的对不对)
+    wx.request({
+      url: 'https://mzz.foryung.com/lianjia-search_mp/search',
+      method:'POST',
+      data: {
+        "keyword": that.data.key,
+        "pageSize": 10,
+        "page": 1//从1开始
+      },
+      success: function(res){
+        var data = res.data.data
+        for(var i=0;i<data.length;i++){
+          data[i].PublishTime = RelativeTime.relativeTime(data[i].PublishTime)
+        }
+        that.setData({data:res.data.data})
+        wx.hideLoading();
       }
     })
   }
